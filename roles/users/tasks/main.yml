@@ -1,0 +1,5 @@
+---
+- name: install publish ssh keys
+  authorized_key: user=pi key={{ item }}
+  with_items:
+    - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCYI/SFJRu4Rg+2GABMnMaEmH+JvymSmXmd9DQ1mYwvQ9NWbmbGsBRrHKAIgiwen2Cv6UWGVjCbC3nclwgmVp+2BOSmhxyTvW2kypjcwJITH1KlywuQoPlvq3hYDa6efVofp0pFhjELWAiAqiJM4O5hh5YEPDOfCo/KeSvBeMBdXV0QN7mly0pFpIp3ZOMT6jFsRA0Aj7EAajpFMgXamgQqMnyxgWHihEqXGAbVyk0sbYENTQNYSgWph7SXB4L0i3hAKOB+rruwSXr+j9rcYbjI+Bedh1TI7qZK4x8gLXqMBjWOtj1l9NMT9S2Ldgiu0Hzyf8HiGs9CgMI3cXn3fx8R timothy"

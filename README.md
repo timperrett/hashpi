@@ -32,11 +32,14 @@ In order to follow along with this build, you would need to have the following c
 ### Hardware Buildout
 
 + Assemble the motherboards with the case (instructions from the case).
+
 + Cut and crimp the nessicary ethernet cables needed to connect the motherboards to the switch. Choose a scheme (A or B, but stick to just one):
 
 ![cat5](http://cdn.instructables.com/FDR/2Z0W/FPKFCZ0Q/FDR2Z0WFPKFCZ0Q.MEDIUM.gif)
 
 + Connect the USB power cords to the motherboards.
+
++ If you're having issues with the motherboard, there are two LEDs indicate status. Explanations for which can be [found here](http://raspberrypi.stackexchange.com/questions/24664/what-do-the-leds-on-the-b-mean).
 
 ### Software Setup
 
@@ -51,6 +54,8 @@ $ sudo passwd root
 $ sudo passwd pi
 <enter new password>
 
+$ sudo reboot
+
 # update the system, disable avahi and bluetooth
 $ sudo apt-get update && sudo apt -y dist-upgrade && \
   sudo systemctl stop avahi-daemon && \
@@ -64,4 +69,14 @@ $ sudo apt-get update && sudo apt -y dist-upgrade && \
 # optionally install a few useful utilities
 $ sudo apt-get install -y htop
 
+```
+
+Now we have our four Pi's running SSH and have disabled the features we wont be using in this cluster build out (e.g. bluetooth)
+
+#### Bootstrap Playbook
+
+The bootstrap playbook setups up core functionality so that we can run more complicated playbooks on the Pis themselves, and also get access to the cluster nodes without having to SSH with an explicit username and password
+
+```
+./playbooks/bootstrap.yml
 ```

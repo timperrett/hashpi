@@ -1,0 +1,11 @@
+#!/usr/bin/env ansible-playbook -i inventory.ini --ask-pass
+---
+- name: install or update the nelson proxy configuration
+  gather_facts: true
+  remote_user: pi
+  become: yes
+  hosts:
+    - leaders
+    - followers
+  roles:
+    - users
