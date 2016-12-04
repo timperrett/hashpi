@@ -2,8 +2,6 @@
 ###############################################################################
 ################################# INSTALL #####################################
 ###############################################################################
-- debug: var=consul_install_path
-
 - stat:
     path: "{{ consul_install_path }}/{{ consul_version }}/"
   register: preexisting
@@ -11,9 +9,6 @@
     - consul
 
 # - debug: var=preexisting
-
-- debug: var=ansible_default_ipv4
-- debug: var=groups['bramble']
 
 - block:
 
@@ -72,6 +67,34 @@
     tags:
       - consul
 
+  # - name: deploy tls files
+  #   copy:
+  #     src: "{{ item.src }}"
+  #     dest: "{{ item.dest }}"
+  #   with_items:
+  #     - src: etc/consul/ssl/cacert.pem
+  #       dest: /etc/consul/ssl/{{ consul_ca_file }}
+  #     - src: etc/consul/ssl/certs/consul.cert.pem
+  #       dest: /etc/consul/ssl/{{ consul_cert_file }}
+  #     - src: etc/consul/ssl/private/consul.key.pem
+  #       dest: /etc/consul/ssl/{{ consul_key_file }}
+  #   when: consul_do_ssl
+  #   notify:
+  #     - restart consul
+  #   tags:
+  #     - consul
+
+  - name: install consul scripts
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: u=rwx,g=rx,o=rx
+    with_items:
+      - src: consul-wait-for-leader.sh
+        dest: /usr/local/bin
+    tags:
+      - consul
+
   - name: configure for systemd
     copy:
       src: consul.service
@@ -79,6 +102,14 @@
       mode: 644
     notify:
       - reload systemd
+    tags:
+      - consul
+
+  - name: enable consul
+    service:
+      name: consul
+      enabled: yes
+      state: started
     tags:
       - consul
 
@@ -97,3 +128,9 @@
 
   become: yes
   become_user: root
+
+- name: wait for leader
+  command: /usr/local/bin/consul-wait-for-leader.sh
+  register: leader_status
+  tags:
+    - consul

@@ -1,7 +1,4 @@
 ---
-- name: reload systemd
-  command: systemctl daemon-reload
-
 - name: restart vault
   become: yes
   become_user: root

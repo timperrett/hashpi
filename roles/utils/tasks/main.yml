@@ -1,0 +1,8 @@
+---
+- name: install check scripts
+  become: yes
+  become_user: root
+  template:
+    src: check-service-active.j2
+    dest: /usr/local/bin/check-service-active
+    mode: u=rwx,g=rx,o=rx

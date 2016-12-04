@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -eo pipefail
+
+usage() {
+    echo "usage: ${0##*/} [ service ]"
+    exit 1
+}
+
+check() {
+{% if ansible_os_family == 'RedHat' %}
+    systemctl is-active "$1" && exit 0 || exit 2
+{% else %}
+    service "$1" status && exit 0 || exit 2
+{% endif %}
+}
+
+main() {
+    [[ -z "$1" ]] && usage || check "$1"
+}
+
+main "$@"
+
+# EOF
