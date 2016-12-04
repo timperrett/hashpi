@@ -1,0 +1,50 @@
+---
+###############################################################################
+################################# INSTALL #####################################
+###############################################################################
+- stat:
+    path: "{{ consul.install_path }}/{{ consul.version }}/"
+  register: preexisting
+
+# - debug: var=preexisting
+
+- block:
+
+  - name: download consul
+    get_url:
+      url: "https://releases.hashicorp.com/consul/{{ consul.version }}/consul_{{ consul.version }}_linux_arm.zip"
+      dest: /tmp/consul.zip
+      mode: 0777
+      checksum: "{{ consul.checksum }}"
+
+  - name: create the install path
+    file:
+      path: "{{ consul.install_path }}/{{ consul.version }}/"
+      state: directory
+      mode: 0755
+
+  - name: decompress archive
+    command: "unzip /tmp/consul.zip -d {{ consul.install_path }}/{{ consul.version }}/"
+
+  - name: remove the tempoary install archive
+    file:
+      path: /tmp/consul.zip
+      state: absent
+
+  - name: link the versioned consul to the local bin
+    file:
+      src: "{{ consul.install_path }}/{{ consul.version }}/consul"
+      dest: /usr/local/bin/consul
+      owner: root
+      group: root
+      state: link
+
+  become: true
+  become_user: root
+  when: preexisting.stat.exists != true
+
+###############################################################################
+################################ CONFIGURE ####################################
+###############################################################################
+
+

@@ -82,3 +82,13 @@ The bootstrap playbook setups up core functionality so that we can run more comp
 ```
 ./playbooks/bootstrap.yml
 ```
+
+#### Leaders Playbook
+
+This playbook installs the following software
+
++ [Docker](https://docker.com/)
++ [Consul](https://www.consul.io/)
++ [Vault](https://www.vaultproject.io/) (uses Consul as its secure backend)
++ [StatsD Server](https://github.com/bitly/statsdaemon)
++ [Noamd](https://www.nomadproject.io/) (leader node only has the `server` component of Nomad installed)

@@ -1,0 +1,45 @@
+---
+###############################################################################
+################################# INSTALL #####################################
+###############################################################################
+
+- stat:
+    path: "{{ vault.install_path }}/{{ vault.version }}/"
+  register: preexisting
+
+# - debug: var=preexisting
+
+- block:
+
+  - name: download vault
+    get_url:
+      url: "https://releases.hashicorp.com/vault/{{ vault.version }}/vault_{{ vault.version }}_linux_arm.zip"
+      dest: /tmp/vault.zip
+      mode: 0777
+      checksum: "{{ vault.checksum }}"
+
+  - name: create the install path
+    file:
+      path: "{{ vault.install_path }}/{{ vault.version }}/"
+      state: directory
+      mode: 0755
+
+  - name: decompress archive
+    command: "unzip /tmp/vault.zip -d {{ vault.install_path }}/{{ vault.version }}/"
+
+  - name: remove the tempoary install archive
+    file:
+      path: /tmp/vault.zip
+      state: absent
+
+  - name: link the versioned binary to the local bin
+    file:
+      src: "{{ vault.install_path }}/{{ vault.version }}/vault"
+      dest: /usr/local/bin/vault
+      owner: root
+      group: root
+      state: link
+
+  become: true
+  become_user: root
+  when: preexisting.stat.exists != true

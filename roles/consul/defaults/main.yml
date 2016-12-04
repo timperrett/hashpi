@@ -1,0 +1,5 @@
+---
+consul:
+  version: "0.7.1"
+  checksum: "sha256:e7b6846fb338c31e238f9b70cc42bd35f7de804cc31d2d91fe23cbe5de948aae"
+  install_path: /usr/local/consul/

@@ -1,0 +1,8 @@
+---
+- name: update the .bash_aliases
+  copy:
+    src: bash_aliases
+    dest: /home/pi/.bash_aliases
+    owner: pi
+    group: pi
+    mode: 0644

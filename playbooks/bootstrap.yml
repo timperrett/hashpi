@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook -i inventory.ini --ask-pass
 ---
-- name: install or update the nelson proxy configuration
+- name: bootstrap the pi clusters
   gather_facts: true
   remote_user: pi
   become: yes
@@ -9,3 +9,4 @@
     - followers
   roles:
     - users
+    - shell

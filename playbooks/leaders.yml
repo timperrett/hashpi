@@ -1,0 +1,12 @@
+#!/usr/bin/env ansible-playbook -i inventory.ini
+---
+- name: install or update the software on the leaders
+  gather_facts: true
+  remote_user: pi
+  hosts:
+    - leaders
+  roles:
+    - consul
+    # - vault
+    # - statsd
+    # - prometheus

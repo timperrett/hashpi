@@ -1,0 +1,5 @@
+---
+vault:
+  version: "0.6.2"
+  checksum: "sha256:efc36dcb2044cf4c80af9e71abd9fb4716db8944e7d102f913d17f922a527189"
+  install_path: /usr/local/vault/
