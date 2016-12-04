@@ -21,23 +21,20 @@
     tags:
       - consul
 
-  - name: create the install path
+  - name: create the install paths
     file:
-      path: "{{ consul_install_path }}/{{ consul_version }}/"
+      path: "{{ item }}"
       state: directory
       mode: 0755
+    with_items:
+      - "{{ consul_install_path }}/{{ consul_version }}"
+      - /usr/share/consul-ui
+      - /etc/consul
     tags:
       - consul
 
   - name: decompress archive
     command: "unzip /tmp/consul.zip -d {{ consul_install_path }}/{{ consul_version }}/"
-    tags:
-      - consul
-
-  - name: remove the tempoary install archive
-    file:
-      path: /tmp/consul.zip
-      state: absent
     tags:
       - consul
 
@@ -51,6 +48,32 @@
     tags:
       - consul
 
+  - name: get consul-ui
+    get_url:
+      url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_web_ui.zip"
+      dest: /tmp/consul_web_ui.zip
+    tags:
+      - consul
+
+  - name: extract consul-ui
+    unarchive:
+      src: /tmp/consul_web_ui.zip
+      dest: /usr/share/consul-ui
+      copy: no
+      creates: /usr/share/consul-ui/index.html
+    tags:
+      - consul
+
+  - name: remove the temp archives
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /tmp/consul.zip
+      - /tmp/consul_web_ui.zip
+    tags:
+      - consul
+
   become: true
   become_user: root
   when: preexisting.stat.exists != true
@@ -60,13 +83,6 @@
 ###############################################################################
 
 - block:
-  - name: create config directory
-    file:
-      path: /etc/consul
-      state: directory
-    tags:
-      - consul
-
   # - name: deploy tls files
   #   copy:
   #     src: "{{ item.src }}"
