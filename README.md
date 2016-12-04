@@ -33,9 +33,9 @@ In order to follow along with this build, you would need to have the following c
 
 + Assemble the motherboards with the case (instructions from the case).
 
-![stage1](docs/img/build-01.jpg)
+![stage1](https://raw.githubusercontent.com/timperrett/hashpi/master/docs/img/build-01.JPG)
 
-![stage1](docs/img/build-02.jpg)
+![stage1](https://raw.githubusercontent.com/timperrett/hashpi/master/docs/img/build-02.JPG)
 
 
 + Cut and crimp the nessicary ethernet cables needed to connect the motherboards to the switch. Choose a scheme (A or B, but stick to just one):
@@ -44,13 +44,13 @@ In order to follow along with this build, you would need to have the following c
 
 + Connect the USB power cords and the network cables to the motherboards.
 
-![stage1](docs/img/build-03.jpg)
+![stage1](https://raw.githubusercontent.com/timperrett/hashpi/master/docs/img/build-03.jpg)
 
 + If you're having issues with the motherboard, there are two LEDs indicate status. Explanations for which can be [found here](http://raspberrypi.stackexchange.com/questions/24664/what-do-the-leds-on-the-b-mean).
 
 + Now its time to attach the i2pc backpack to the LCD. There's a decent tutorial [over here](https://learn.adafruit.com/i2c-spi-lcd-backpack), but you absolutely need to know how to solder and use the aforementioned tools (never a better time to learn this stuff that the present!).
 
-![stage1](docs/img/build-04.jpg)
+![stage1](https://raw.githubusercontent.com/timperrett/hashpi/master/docs/img/build-04.jpg)
 
 
 
