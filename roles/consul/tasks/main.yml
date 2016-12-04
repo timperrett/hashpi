@@ -2,42 +2,59 @@
 ###############################################################################
 ################################# INSTALL #####################################
 ###############################################################################
+- debug: var=consul_install_path
+
 - stat:
-    path: "{{ consul.install_path }}/{{ consul.version }}/"
+    path: "{{ consul_install_path }}/{{ consul_version }}/"
   register: preexisting
+  tags:
+    - consul
 
 # - debug: var=preexisting
+
+- debug: var=ansible_default_ipv4
+- debug: var=groups['bramble']
 
 - block:
 
   - name: download consul
     get_url:
-      url: "https://releases.hashicorp.com/consul/{{ consul.version }}/consul_{{ consul.version }}_linux_arm.zip"
+      url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_arm.zip"
       dest: /tmp/consul.zip
       mode: 0777
-      checksum: "{{ consul.checksum }}"
+      checksum: "{{ consul_checksum }}"
+    tags:
+      - consul
 
   - name: create the install path
     file:
-      path: "{{ consul.install_path }}/{{ consul.version }}/"
+      path: "{{ consul_install_path }}/{{ consul_version }}/"
       state: directory
       mode: 0755
+    tags:
+      - consul
 
   - name: decompress archive
-    command: "unzip /tmp/consul.zip -d {{ consul.install_path }}/{{ consul.version }}/"
+    command: "unzip /tmp/consul.zip -d {{ consul_install_path }}/{{ consul_version }}/"
+    tags:
+      - consul
 
   - name: remove the tempoary install archive
     file:
       path: /tmp/consul.zip
       state: absent
+    tags:
+      - consul
 
   - name: link the versioned consul to the local bin
     file:
-      src: "{{ consul.install_path }}/{{ consul.version }}/consul"
+      src: "{{ consul_install_path }}/{{ consul_version }}/consul"
       dest: /usr/local/bin/consul
       owner: root
       group: root
       state: link
+    tags:
+      - consul
 
   become: true
   become_user: root
@@ -47,4 +64,36 @@
 ################################ CONFIGURE ####################################
 ###############################################################################
 
+- block:
+  - name: create config directory
+    file:
+      path: /etc/consul
+      state: directory
+    tags:
+      - consul
 
+  - name: configure for systemd
+    copy:
+      src: consul.service
+      dest: "{{ systemd_dir }}/consul.service"
+      mode: 644
+    notify:
+      - reload systemd
+    tags:
+      - consul
+
+  - name: configure consul
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: u=rw,g=r,o=r
+    with_items:
+      - src: consul.json.j2
+        dest: /etc/consul/consul.json
+    notify:
+      - restart consul
+    tags:
+      - consul
+
+  become: yes
+  become_user: root

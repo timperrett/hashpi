@@ -1,5 +1,27 @@
 ---
-consul:
-  version: "0.7.1"
-  checksum: "sha256:e7b6846fb338c31e238f9b70cc42bd35f7de804cc31d2d91fe23cbe5de948aae"
-  install_path: /usr/local/consul/
+consul_version: "0.7.1"
+consul_checksum: "sha256:e7b6846fb338c31e238f9b70cc42bd35f7de804cc31d2d91fe23cbe5de948aae"
+consul_install_path: /usr/local/consul/
+consul_dc: bramble
+consul_dns_domain: bramble.local
+consul_bind: "{{ ansible_default_ipv4.address }}"
+consul_client: "{{ ansible_default_ipv4.address }}"
+consul_advertise: "{{ ansible_default_ipv4.address }}"
+consul_is_server: no
+consul_retry_join: "{% for host in groups['bramble'] %}\"{{ host }}\"{% if not loop.last %}, {% endif %}{% endfor %}"
+consul_bootstrap_expect: 1
+consul_disable_remote_exec: "true"
+
+consul_do_acl: no
+consul_acl_master_token: "42baab74-b9e1-11e6-8370-c7a88ede55d0"
+consul_acl_agent_token: "77829414-d3e5-32a9-a48b-2b922ac5619d"
+consul_acl_cluster: "{{ cluster }}"
+consul_acl_default_policy: "allow"
+consul_acl_down_policy: "allow"
+
+consul_do_ssl: no
+consul_ca_file: ca.cert
+consul_cert_file: consul.cert
+consul_key_file: consul.key
+
+consul_do_auth: no

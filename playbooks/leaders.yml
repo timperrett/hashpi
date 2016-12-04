@@ -6,7 +6,9 @@
   hosts:
     - leaders
   roles:
-    - consul
+    - role: consul
+      consul_is_server: yes
+
     # - vault
     # - statsd
     # - prometheus

@@ -43,3 +43,31 @@
   become: true
   become_user: root
   when: preexisting.stat.exists != true
+
+###############################################################################
+################################ CONFIGURE ####################################
+###############################################################################
+
+- block:
+  - name: configure vault for systemd
+    copy:
+      src: vault.service
+      dest: "{{ systemd_dir }}/vault.service"
+      mode: 644
+    notify: reload systemd
+
+  - name: configure vault
+    copy:
+      src: vault.config
+      dest: /etc/vault.config
+      mode: 600
+    notify: restart vault
+
+  # - name: register vault with consul
+  #   template:
+  #     src: vault-consul.json.j2
+  #     dest: /etc/consul/vault-consul.json
+  #     mode: 0644
+
+  become: yes
+  become_user: root

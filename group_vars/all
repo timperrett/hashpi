@@ -1,0 +1,6 @@
+systemd_dir: /etc/systemd/system
+
+consul:
+  do_ssl: no
+  do_acl: no
+  do_auth: no

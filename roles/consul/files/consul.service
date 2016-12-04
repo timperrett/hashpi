@@ -1,0 +1,15 @@
+[Unit]
+Description=Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
+Documentation=http://www.consul.io
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/local/bin/consul agent -client 0.0.0.0 -config-dir=/etc/consul -data-dir=/var/lib/consul
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

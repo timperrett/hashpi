@@ -1,0 +1,15 @@
+[Unit]
+Description=Runs Vault server
+Documentation=http://www.vaultproject.io
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/local/bin/vault server -config /etc/vault.config
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
