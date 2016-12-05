@@ -1,6 +1,6 @@
 # hashpi
 
-> Rasberry Pi running Hashicorp datacenter infrastructure (nomad, vault, consul)
+> Rasberry Pi rack running clustered Hashicorp datacenter infrastructure (nomad, vault, consul)
 
 ## Preamble
 
