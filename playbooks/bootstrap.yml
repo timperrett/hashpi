@@ -6,7 +6,21 @@
   become: yes
   hosts:
     - leaders
-    - followers
+    # - followers
   roles:
     - users
     - shell
+
+  tasks:
+    - name: stop all the default shit
+      command: "{{ item }}"
+      with_items:
+        - apt-get update
+        - apt dist-upgrade -y
+        - systemctl stop avahi-daemon
+        - systemctl disable avahi-daemon
+        - systemctl disable avahi-daemon.socket
+        - systemctl stop bluetooth
+        - systemctl disable bluetooth
+      become: yes
+      become_user: root

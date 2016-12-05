@@ -1,0 +1,33 @@
+---
+- name: override the network interfaces config
+  copy:
+    src: interfaces
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: 744
+
+- name: install the dhcp server
+  apt:
+    name: isc-dhcp-server
+    update_cache: yes
+
+- name: copy the dhcp config
+  copy:
+    src: dhcpd.conf
+    dest: /etc/dhcp/dhcpd.conf
+
+- name: edit /etc/default/isc-dhcp-server
+  lineinfile:
+    dest: /etc/default/isc-dhcp-server
+    line: "{{ item }}"
+  with_items:
+    - DHCPD_CONF=/etc/dhcp/dhcpd.conf
+    - DHCPD_PID=/var/run/dhcpd.pid
+
+- name: alter the interfaces line in /etc/default/isc-dhcp-server
+  lineinfile:
+    dest: /etc/default/isc-dhcp-server
+    regexp: '^INTERFACES='
+    line: 'INTERFACES="eth0"'
+    backrefs: yes

@@ -72,13 +72,7 @@ $ sudo passwd pi
 $ sudo reboot
 
 # update the system, disable avahi and bluetooth
-$ sudo apt-get update && sudo apt -y dist-upgrade && \
-  sudo systemctl stop avahi-daemon && \
-  sudo systemctl disable avahi-daemon && \
-  sudo systemctl disable avahi-daemon.socket && \
-  sudo systemctl stop bluetooth && \
-  sudo systemctl disable bluetooth & \
-  sudo systemctl enable ssh && \
+$ sudo systemctl enable ssh && \
   sudo systemctl start ssh
 
 # optionally install a few useful utilities
