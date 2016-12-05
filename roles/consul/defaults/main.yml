@@ -9,7 +9,7 @@ consul_client: "{{ ansible_default_ipv4.address }}"
 consul_advertise: "{{ ansible_default_ipv4.address }}"
 consul_is_server: no
 consul_retry_join: "{% for host in groups['bramble'] %}\"{{ host }}\"{% if not loop.last %}, {% endif %}{% endfor %}"
-consul_bootstrap_expect: 1
+consul_bootstrap_expect: 2
 consul_disable_remote_exec: "true"
 
 consul_do_acl: no

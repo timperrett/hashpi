@@ -5,6 +5,7 @@
   "node_name": "{{ ansible_hostname }}",
   "rejoin_after_leave": true,
   "domain": "{{ consul_dns_domain }}",
+  "recursors" : [ "8.8.8.8" ],
 {% if consul_bootstrap_expect > 1 %}
   "retry_join": [ {{ consul_retry_join }} ],
 {% endif %}

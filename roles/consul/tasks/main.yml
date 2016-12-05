@@ -147,7 +147,16 @@
 
 - name: join cluster of consul-dcs
   command: /usr/local/bin/consul join {% for host in groups['leaders']%} {{ host }}{%endfor%}
+  run_once: yes
+  when: consul_is_server == true
+  tags:
+    - consul
+
+- name: join cluster of consul-dcs
+  command: /usr/local/bin/consul join {% for host in groups['leaders']%} {{ host }}{%endfor%}
   when: consul_is_server == false
+  tags:
+    - consul
 
 - name: wait for leader
   command: /usr/local/bin/consul-wait-for-leader.sh
