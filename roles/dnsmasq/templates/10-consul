@@ -1,0 +1,20 @@
+#Listen on all interfaces
+interface=*
+
+addn-hosts=/etc/hosts
+
+# Never forward addresses in the non-routed address spaces.
+bogus-priv
+
+server=8.8.8.8
+server=8.8.4.4
+
+# configure DNS resolution to consul servers
+server=/{{ consul_dns_domain }}/127.0.0.1#8600
+
+{% for host in groups[consul_servers_group] %}
+{% if host != ansible_default_ipv4.address %}
+server=/bramble.local/{{ host }}#8600
+
+{% endif %}
+{% endfor %}

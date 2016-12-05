@@ -1,14 +1,14 @@
 ---
 consul_version: "0.7.1"
 consul_checksum: "sha256:e7b6846fb338c31e238f9b70cc42bd35f7de804cc31d2d91fe23cbe5de948aae"
-consul_install_path: /usr/local/consul/
+consul_install_path: /usr/local/consul
 consul_dc: bramble
 consul_dns_domain: bramble.local
 consul_bind: "{{ ansible_default_ipv4.address }}"
 consul_client: "{{ ansible_default_ipv4.address }}"
 consul_advertise: "{{ ansible_default_ipv4.address }}"
 consul_is_server: no
-consul_retry_join: "{% for host in groups['bramble'] %}\"{{ host }}\"{% if not loop.last %}, {% endif %}{% endfor %}"
+consul_retry_join: "{% for host in groups['leaders'] %}\"{{ host }}\"{% if not loop.last %}, {% endif %}{% endfor %}"
 consul_bootstrap_expect: 2
 consul_disable_remote_exec: "true"
 

@@ -163,3 +163,16 @@
   register: leader_status
   tags:
     - consul
+
+# - block:
+#   - name: update the resolve conf database
+#     template:
+#       src: resolveconf.conf.j2
+#       dest: /etc/resolvconf.conf
+#       mode: u=rw,g=r,o=r
+
+#   - name: resolve the resolve conf database
+#     command: resolvconf -u
+
+#   become: yes
+#   become_user: root

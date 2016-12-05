@@ -1,0 +1,95 @@
+---
+- name: install packages (redhat)
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - dnsmasq
+    - bind-utils
+    - NetworkManager
+  tags:
+    - dnsmasq
+    - bootstrap
+  when: ansible_distribution == 'RedHat'
+
+- name: install packages (debian)
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - dnsmasq
+  tags:
+    - dnsmasq
+    - bootstrap
+  when: ansible_distribution == 'Debian'
+
+- name: ensure dnsmasq.d directory exists
+  file:
+    path: /etc/NetworkManager/dnsmasq.d
+    state: directory
+  tags:
+    - dnsmasq
+
+- name: configure dnsmasq for consul
+  template:
+    src: 10-consul
+    dest: /etc/dnsmasq.d/10-consul
+    mode: 755
+  notify:
+    - restart dnsmasq
+  tags:
+    - dnsmasq
+
+- name: enable dnsmasq
+  service:
+    name: dnsmasq
+    state: started
+    enabled: yes
+  tags:
+    - dnsmasq
+
+- name: configure networkmanager for dnsmasq
+  lineinfile:
+    dest: /etc/NetworkManager/NetworkManager.conf
+    line: "dns=none"
+    insertafter: "^\\[main\\]$"
+  notify:
+    - restart networkmanager
+  tags:
+    - dnsmasq
+  when: ansible_distribution == 'RedHat'
+
+- name: configure dhclient for dnsmasq
+  template:
+    dest: /etc/dhcp/dhclient.conf
+    src: etc/dhcp/dhclient.conf.j2
+  tags:
+    - dnsmasq
+  when: ansible_distribution == 'Debian'
+
+#supersede domain-name
+#prepend domain-name-servers
+- meta: flush_handlers
+
+- name: add dnsmasq to /etc/resolv.conf
+  template:
+    dest: /etc/resolv.conf
+    src: etc/resolv.conf.j2
+  tags:
+    - dnsmasq
+
+- name: set appropriate hostname
+  hostname:
+    name: "{{ hostname }}"
+  tags:
+    - dnsmasq
+
+- name: update hosts file
+  template:
+    src: etc/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - dnsmasq

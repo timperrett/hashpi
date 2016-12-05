@@ -1,10 +1,20 @@
 #!/usr/bin/env ansible-playbook -i inventory.ini
 ---
+- hosts: bramble
+  gather_facts: true
+  remote_user: pi
+  become: yes
+  become_user: root
+  roles:
+    - utils
+    - { role: dnsmasq, consul_dns_domain: bramble.local }
+  tags:
+    - bramble
+
 - hosts: leaders
   gather_facts: true
   remote_user: pi
   roles:
-    - utils
     - { role: consul, consul_is_server: yes }
     # - vault
     # - statsd
@@ -16,7 +26,6 @@
   gather_facts: true
   remote_user: pi
   roles:
-    - utils
     - consul
   tags:
     - followers

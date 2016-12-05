@@ -1,6 +1,6 @@
 #!/bin/bash
 
-max_wait=30
+max_wait=60
 
 while :; do
   if [[ "`curl -s localhost:8500/v1/status/leader`" =~ \"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*\" ]]; then
