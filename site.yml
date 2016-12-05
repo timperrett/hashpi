@@ -1,0 +1,22 @@
+#!/usr/bin/env ansible-playbook -i inventory.ini
+---
+- hosts: leaders
+  gather_facts: true
+  remote_user: pi
+  roles:
+    - utils
+    - { role: consul, consul_is_server: yes }
+    # - vault
+    # - statsd
+    # - prometheus
+  tags:
+    - leaders
+
+- hosts: followers
+  gather_facts: true
+  remote_user: pi
+  roles:
+    - utils
+    - consul
+  tags:
+    - followers

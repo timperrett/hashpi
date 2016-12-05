@@ -145,6 +145,10 @@
   become: yes
   become_user: root
 
+- name: join cluster of consul-dcs
+  command: /usr/local/bin/consul join {% for host in groups['leaders']%} {{ host }}{%endfor%}
+  when: consul_is_server == false
+
 - name: wait for leader
   command: /usr/local/bin/consul-wait-for-leader.sh
   register: leader_status

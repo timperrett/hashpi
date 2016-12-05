@@ -6,7 +6,7 @@
   become: yes
   hosts:
     - leaders
-    # - followers
+    - followers
   roles:
     - users
     - shell
