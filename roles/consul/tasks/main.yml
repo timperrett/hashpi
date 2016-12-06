@@ -123,14 +123,6 @@
     tags:
       - consul
 
-  - name: enable consul
-    service:
-      name: consul
-      enabled: yes
-      state: started
-    tags:
-      - consul
-
   - name: configure consul
     template:
       src: "{{ item.src }}"
@@ -139,8 +131,14 @@
     with_items:
       - src: consul.json.j2
         dest: /etc/consul/consul.json
-    notify:
-      - restart consul
+    tags:
+      - consul
+
+  - name: enable consul
+    service:
+      name: consul
+      enabled: yes
+      state: started
     tags:
       - consul
 
@@ -161,16 +159,3 @@
   register: leader_status
   tags:
     - consul
-
-# - block:
-#   - name: update the resolve conf database
-#     template:
-#       src: resolveconf.conf.j2
-#       dest: /etc/resolvconf.conf
-#       mode: u=rw,g=r,o=r
-
-#   - name: resolve the resolve conf database
-#     command: resolvconf -u
-
-#   become: yes
-#   become_user: root

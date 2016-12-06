@@ -1,15 +1,15 @@
 #!/usr/bin/env ansible-playbook -i inventory.ini
 ---
-- hosts: bramble
-  gather_facts: true
-  remote_user: pi
-  become: yes
-  become_user: root
-  roles:
-    - utils
-    - { role: dnsmasq, consul_dns_domain: bramble.local }
-  tags:
-    - bramble
+# - hosts: bramble
+#   gather_facts: true
+#   remote_user: pi
+#   become: yes
+#   become_user: root
+#   roles:
+#     - utils
+#     - { role: dnsmasq, consul_dns_domain: bramble.local }
+#   tags:
+#     - bramble
 
 - name: setup the consul servers
   hosts: consul
