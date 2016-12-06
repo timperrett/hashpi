@@ -98,10 +98,28 @@ Once you've bootstrapped your cluster and you can SSH into the nodes with your k
 ./site.yml
 ```
 
-This playbook installs the following software
+This set of playbooks installs the following software
 
 + [Consul](https://www.consul.io/) (runs on 3 nodes as a quorum)
-+ [Docker](https://docker.com/)
 + [Vault](https://www.vaultproject.io/) (uses Consul as its secure backend; runs on 3 nodes)
-+ [StatsD Server](https://github.com/bitly/statsdaemon)
 + [Noamd](https://www.nomadproject.io/) (only rpi01 has the `server` component of Nomad installed)
++ [Prometheus](https://prometheus.io)
++ [Grafana](http://grafana.org/)
++ [Docker](https://docker.com/)
+
+Whilst the setup is vastly automated, there are a few manual steps. When first installing Vault, there is a set of keys that are generated which cannot be automated away, because they are required for vault initialization. The steps to first setup the vault are [documented in this blog post](https://www.vaultproject.io/intro/getting-started/deploy.html) but the TL;DR is:
+
+```
+$ ssh pi@<baron-ip>
+$ export VAULT_ADDR=http://<ip>:8200
+$ vault init
+
+# be sure to keep the generated keys in a safe place, and absolutely do not check them in anywhere!
+
+$ vault -tls-skip-verify unseal
+
+```
+
+Given this is just a local raspberry pi cluster, I'm not fussing around with SSL as its a development cluster for me. I do however really, really recommend that you use SSL on this thing - or anything else for that matter - that is the best practice can self-signed certs can be easily generated and provided to vault. See the documentation for more information on that. 
+
+
