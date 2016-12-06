@@ -4,8 +4,10 @@
 ###############################################################################
 
 - stat:
-    path: "{{ vault.install_path }}/{{ vault.version }}"
+    path: "{{ vault_install_path }}/{{ vault_version }}"
   register: preexisting
+  tags:
+    - vault
 
 # - debug: var=preexisting
 
@@ -13,32 +15,42 @@
 
   - name: download vault
     get_url:
-      url: "https://releases.hashicorp.com/vault/{{ vault.version }}/vault_{{ vault.version }}_linux_arm.zip"
+      url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_arm.zip"
       dest: /tmp/vault.zip
       mode: 0777
-      checksum: "{{ vault.checksum }}"
+      checksum: "{{ vault_checksum }}"
+    tags:
+      - vault
 
   - name: create the install path
     file:
-      path: "{{ vault.install_path }}/{{ vault.version }}/"
+      path: "{{ vault_install_path }}/{{ vault_version }}/"
       state: directory
       mode: 0755
+    tags:
+      - vault
 
   - name: decompress archive
-    command: "unzip /tmp/vault.zip -d {{ vault.install_path }}/{{ vault.version }}/"
+    command: "unzip /tmp/vault.zip -d {{ vault_install_path }}/{{ vault_version }}/"
+    tags:
+      - vault
 
   - name: remove the tempoary install archive
     file:
       path: /tmp/vault.zip
       state: absent
+    tags:
+      - vault
 
   - name: link the versioned binary to the local bin
     file:
-      src: "{{ vault.install_path }}/{{ vault.version }}/vault"
+      src: "{{ vault_install_path }}/{{ vault_version }}/vault"
       dest: /usr/local/bin/vault
       owner: root
       group: root
       state: link
+    tags:
+      - vault
 
   become: true
   become_user: root
@@ -55,6 +67,8 @@
       dest: "{{ systemd_dir }}/vault.service"
       mode: 644
     notify: reload systemd
+    tags:
+      - vault
 
   - name: configure vault
     copy:
@@ -62,12 +76,24 @@
       dest: /etc/vault.config
       mode: 600
     notify: restart vault
+    tags:
+      - vault
 
-  # - name: register vault with consul
-  #   template:
-  #     src: vault-consul.json.j2
-  #     dest: /etc/consul/vault-consul.json
-  #     mode: 0644
+  - name: register vault with consul
+    template:
+      src: vault-consul.json.j2
+      dest: /etc/consul/vault-consul.json
+      mode: 0644
+    tags:
+      - vault
+
+  - name: enable vault
+    service:
+      name: vault
+      enabled: yes
+      state: started
+    tags:
+      - vault
 
   become: yes
   become_user: root

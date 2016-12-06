@@ -1,4 +1,4 @@
-#!/usr/bin/env ansible-playbook -i inventory.ini
+#!/usr/bin/env ansible-playbook -i inventory.ini --skip-tags=consul
 ---
 # - hosts: bramble
 #   gather_facts: true
@@ -21,23 +21,27 @@
     - consul
     - consul-servers
 
-# - name: setup the baron
-#   hosts: consul
-#   gather_facts: true
-#   remote_user: pi
-#   roles:
-#     - vault
-#     # - prometheus
-#   tags:
-#     - baron
-#     - vault
-#     - prometheus
+- name: setup the baron
+  hosts: baron
+  gather_facts: true
+  remote_user: pi
+  roles:
+    - { role: vault, vault_datacenter: alpha }
+    # - { role: nomad, nomad_is_server: yes }
+    # - prometheus
+    # - grafana
+  tags:
+    - baron
+    - vault
+    - prometheus
+    - grafana
 
 - hosts: followers
   gather_facts: true
   remote_user: pi
   roles:
     - consul
+    - nomad
   tags:
     - consul
     - followers
