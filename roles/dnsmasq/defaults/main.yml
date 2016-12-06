@@ -1,3 +1,3 @@
 ---
 hostname: "{{ ansible_hostname }}.node.{{ consul_dns_domain }}"
-consul_servers_group: leaders
+consul_servers_group: consul

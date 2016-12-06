@@ -13,5 +13,6 @@
   with_items:
     - htop
     - dnsutils
+    - telnet
   tags:
     - utils

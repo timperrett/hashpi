@@ -4,7 +4,7 @@
 ###############################################################################
 
 - stat:
-    path: "{{ vault.install_path }}/{{ vault.version }}/"
+    path: "{{ vault.install_path }}/{{ vault.version }}"
   register: preexisting
 
 # - debug: var=preexisting

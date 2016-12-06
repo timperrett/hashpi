@@ -9,7 +9,7 @@ User=root
 Group=root
 ExecStart=/usr/local/bin/consul agent -client 0.0.0.0 -config-dir=/etc/consul -data-dir=/var/lib/consul
 ExecReload=/bin/kill -HUP $MAINPID
-KillSignal=SIGINT
+KillSignal=SIGTERM
 
 [Install]
 WantedBy=multi-user.target

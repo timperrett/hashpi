@@ -90,12 +90,18 @@ The bootstrap playbook setups up core functionality so that we can run more comp
 ./playbooks/bootstrap.yml
 ```
 
-#### Leaders Playbook
+#### Site Plays
+
+Once you've bootstrapped your cluster and you can SSH into the nodes with your key, then we can simply run the ansible site plays, and let it install all the nessicary gubbins.
+
+```
+./site.yml
+```
 
 This playbook installs the following software
 
++ [Consul](https://www.consul.io/) (runs on 3 nodes as a quorum)
 + [Docker](https://docker.com/)
-+ [Consul](https://www.consul.io/)
-+ [Vault](https://www.vaultproject.io/) (uses Consul as its secure backend)
++ [Vault](https://www.vaultproject.io/) (uses Consul as its secure backend; runs on 3 nodes)
 + [StatsD Server](https://github.com/bitly/statsdaemon)
-+ [Noamd](https://www.nomadproject.io/) (leader node only has the `server` component of Nomad installed)
++ [Noamd](https://www.nomadproject.io/) (only rpi01 has the `server` component of Nomad installed)

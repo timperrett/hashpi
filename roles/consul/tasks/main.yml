@@ -108,6 +108,8 @@
     with_items:
       - src: consul-wait-for-leader.sh
         dest: /usr/local/bin
+      - src: consul-destroy-install.sh
+        dest: /usr/local/bin
     tags:
       - consul
 
@@ -145,16 +147,12 @@
   become: yes
   become_user: root
 
-- name: join cluster of consul-dcs
-  command: /usr/local/bin/consul join {% for host in groups['leaders']%} {{ host }}{%endfor%}
-  run_once: yes
-  when: consul_is_server == true
-  tags:
-    - consul
+- pause:
+    seconds: 3
 
 - name: join cluster of consul-dcs
-  command: /usr/local/bin/consul join {% for host in groups['leaders']%} {{ host }}{%endfor%}
-  when: consul_is_server == false
+  command: "/usr/local/bin/consul join {{ groups['consul'] | random }}"
+  run_once: yes
   tags:
     - consul
 

@@ -11,16 +11,27 @@
   tags:
     - bramble
 
-- hosts: leaders
+- name: setup the consul servers
+  hosts: consul
   gather_facts: true
   remote_user: pi
   roles:
     - { role: consul, consul_is_server: yes }
-    # - vault
-    # - statsd
-    # - prometheus
   tags:
-    - leaders
+    - consul
+    - consul-servers
+
+# - name: setup the baron
+#   hosts: consul
+#   gather_facts: true
+#   remote_user: pi
+#   roles:
+#     - vault
+#     # - prometheus
+#   tags:
+#     - baron
+#     - vault
+#     - prometheus
 
 - hosts: followers
   gather_facts: true
@@ -28,4 +39,5 @@
   roles:
     - consul
   tags:
+    - consul
     - followers

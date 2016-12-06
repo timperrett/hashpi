@@ -5,8 +5,7 @@
   remote_user: pi
   become: yes
   hosts:
-    - leaders
-    - followers
+    - bramble
   roles:
     - users
     - shell
