@@ -2,6 +2,10 @@
 
 > Rasberry Pi rack running clustered Hashicorp datacenter infrastructure (nomad, vault, consul)
 
++ [Preamble](#preamble)
++ [Hardware Buildout](#hardware-buildout)
++ [Software Deployment](#software-deployment)
+
 ## Preamble
 
 In order to follow along with this build, you would need to have the following components and tools available to you:
@@ -27,9 +31,7 @@ In order to follow along with this build, you would need to have the following c
 + 1x pair of thin, long-nose pliers (these are useful for the case build)
 + 1x case of minature / precision screwdrivers (e.g. [these](http://www.homedepot.com/p/TEKTON-Precision-Screwdriver-Set-6-Piece-2985/207096248?cm_mmc=Shopping%7cTHD%7cG%7c0%7cG-BASE-PLA-D25T-HandTools%7c&gclid=CjwKEAiA94nCBRDxismumrL83icSJAAeeETQQSkzNXpnq7FmWWAG6wa_VkhktpHDJ_dErC8Cn7cvIBoC7VHw_wcB&gclsrc=aw.ds) or [these](http://www.firemountaingems.com/itemdetails/H201579TL?engine=google&campaign=[ADL]+[Non-Brand]+[PLA]+[Shopping]&adgroup=[PLA]+[Shopping]+Best+Sellers&kwid=productads-adid^113207974204-device^c-plaid^61529866819-sku^H201579TL-adType^PLA))
 
-## Getting Started
-
-### Hardware Buildout
+## Hardware Buildout
 
 + Assemble the motherboards with the case (instructions from the case).
 
@@ -52,9 +54,7 @@ In order to follow along with this build, you would need to have the following c
 
 ![stage 4](https://raw.githubusercontent.com/timperrett/hashpi/master/docs/img/build-04.JPG)
 
-
-
-### Software Setup
+## Software Deployment
 
 These instructions assume you are running *Raspbian Lite*, Jesse or later (this requires [systemd](https://www.freedesktop.org/wiki/Software/systemd/)). You can download [Raspbian Lite from here](https://www.raspberrypi.org/downloads/raspbian/), and I would strongly recomend checking out resin.io [Ether](https://etcher.io/) for a quick and convenient way to flash your SD cards from OSX, with the vanilla Raspbian image you are downloading.
 
@@ -80,17 +80,19 @@ $ sudo apt-get install -y htop
 
 ```
 
-Now we have our four Pi's running SSH and have disabled the features we wont be using in this cluster build out (e.g. bluetooth)
+Now we have our four Pi's running SSH and have disabled the features we wont be using in this cluster build out (e.g. bluetooth). Now we are ready to deploy the bulk of the software! This repo makes use of [Ansible](https://www.ansible.com/) as its provisioning system; in order to automate the vast majority of operations we conduct on the cluster. This makes them repeatable and testable. Please checkout the Ansible documentation if you are not familiar with the tool.
 
 #### Bootstrap Playbook
 
-The bootstrap playbook setups up core functionality so that we can run more complicated playbooks on the Pis themselves, and also get access to the cluster nodes without having to SSH with an explicit username and password
+The bootstrap playbook setups up core functionality so that we can run more complicated playbooks on the Pis themselves, and also get access to the cluster nodes without having to SSH with an explicit username and password (add your key to the `user` roles `vars` file). After first turning on the cluster and enabling SSH, the following should be executed in the root of the repository: 
 
 ```
-./playbooks/bootstrap.yml
+./bootstrap.yml
 ```
 
-#### Site Plays
+This mainly kills avahai-daemon and several other processes we will not be needing, going forward. 
+
+#### Site Playbook
 
 Once you've bootstrapped your cluster and you can SSH into the nodes with your key, then we can simply run the ansible site plays, and let it install all the nessicary gubbins.
 
@@ -98,12 +100,13 @@ Once you've bootstrapped your cluster and you can SSH into the nodes with your k
 ./site.yml
 ```
 
-This set of playbooks installs the following software
+This set of playbooks installs the following software (in order).
 
++ Debugging Utils (htop, nslookup, telnet etc)
 + [Consul](https://www.consul.io/) (runs on 3 nodes as a quorum)
-+ [Vault](https://www.vaultproject.io/) (uses Consul as its secure backend; runs on 3 nodes)
++ [Vault](https://www.vaultproject.io/) (uses Consul as its secure backend; runs on rpi01)
 + [Noamd](https://www.nomadproject.io/) (only rpi01 has the `server` component of Nomad installed)
-+ [Prometheus](https://prometheus.io)
++ [Prometheus](https://prometheus.io) (only runs on rpi01)
 + [Grafana](http://grafana.org/)
 + [Docker](https://docker.com/)
 
