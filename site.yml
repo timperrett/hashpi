@@ -28,7 +28,7 @@
   remote_user: pi
   roles:
     - { role: vault, vault_datacenter: alpha }
-    - { role: nomad, nomad_is_server: yes, nomad_datacenter: alpha }
+    - { role: nomad, nomad_is_server: yes, nomad_dc: alpha }
     # - prometheus
     # - grafana
   tags:
@@ -44,7 +44,7 @@
   remote_user: pi
   roles:
     # - consul
-    - { role: nomad, nomad_datacenter: alpha }
+    - { role: nomad, nomad_dc: alpha }
   tags:
     - followers
     - consul

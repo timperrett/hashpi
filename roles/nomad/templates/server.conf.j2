@@ -1,7 +1,7 @@
 bind_addr = "0.0.0.0"
 data_dir = "/var/lib/nomad"
-region = "{{ nomad_datacenter }}"
-datacenter = "{{ nomad_datacenter }}"
+region = "{{ nomad_dc }}"
+datacenter = "{{ nomad_dc }}"
 name = "{{ ansible_hostname }}.node"
 log_level = "DEBUG"
 enable_debug = true

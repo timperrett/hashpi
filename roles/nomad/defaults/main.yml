@@ -2,7 +2,7 @@
 nomad_version: "0.5.0"
 nomad_checksum: "sha256:c85d3ddac0dbb9ed594eabada29daa2bf26619d24f304587c9d7e775c99ad6f6"
 nomad_install_path: /usr/local/consul
-nomad_datacenter: dc1
+nomad_dc: dc1
 nomad_is_server: no
 nomad_leader_group: baron
 nomad_bootstrap_expect: "{{ groups[nomad_leader_group] | length }}"
