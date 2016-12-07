@@ -1,0 +1,11 @@
+#!/usr/bin/env ansible-playbook -i inventory.ini
+---
+- name: collect debug information from all pis
+  gather_facts: true
+  remote_user: pi
+  become: yes
+  hosts:
+    - bramble
+  tasks:
+    - name: see what the default ip address is
+      debug: msg="{{ ansible_default_ipv4 }}"
