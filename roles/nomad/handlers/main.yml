@@ -1,0 +1,9 @@
+- name: restart nomad
+  service:
+    name: nomad
+    state: restarted
+
+- name: reload consul
+  service:
+    name: consul
+    state: reloaded

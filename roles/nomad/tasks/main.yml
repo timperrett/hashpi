@@ -1,1 +1,96 @@
 ---
+###############################################################################
+################################# INSTALL #####################################
+###############################################################################
+- stat:
+    path: "{{ nomad_install_path }}/{{ nomad_version }}/"
+  register: preexisting
+  tags:
+    - nomad
+
+- block:
+
+  - name: download nomad
+    get_url:
+      url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_arm.zip"
+      dest: /tmp/nomad.zip
+      mode: 0777
+      checksum: "{{ nomad_checksum }}"
+    tags:
+      - nomad
+
+  - name: create the install paths
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0755
+    with_items:
+      - "{{ nomad_install_path }}/{{ nomad_version }}"
+      - /var/lib/nomad
+      - /etc/nomad
+    tags:
+      - nomad
+
+  - name: decompress archive
+    command: "unzip /tmp/nomad.zip -d {{ nomad_install_path }}/{{ nomad_version }}/"
+    tags:
+      - nomad
+
+  - name: link the versioned nomad to the local bin
+    file:
+      src: "{{ nomad_install_path }}/{{ nomad_version }}/nomad"
+      dest: /usr/local/bin/nomad
+      owner: root
+      group: root
+      state: link
+    tags:
+      - nomad
+
+  - name: remove the temp archives
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /tmp/nomad.zip
+    tags:
+      - nomad
+
+  become: true
+  become_user: root
+  when: preexisting.stat.exists != true
+
+- block:
+  - name: setup nomad server config
+    template:
+      src: server.conf.j2
+      dest: /etc/nomad/nomad.hcl
+    when: nomad_is_server
+    tags:
+      - nomad
+
+  - name: setup nomad client config
+    template:
+      src: client.conf.j2
+      dest: /etc/nomad/nomad.hcl
+    when: not nomad_is_server
+    tags:
+      - nomad
+
+  - name: install nomad systemd unit
+    copy:
+      src: nomad.service
+      dest: "{{ systemd_dir }}/nomad.service"
+    notify:
+      - reload systemd
+    tags:
+      - nomad
+
+  - name: enable nomad
+    service:
+      name: nomad
+      enabled: yes
+      state: started
+    tags:
+      - nomad
+  become: true
+  become_user: root

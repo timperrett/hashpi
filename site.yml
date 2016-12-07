@@ -1,15 +1,16 @@
-#!/usr/bin/env ansible-playbook -i inventory.ini --skip-tags=consul
+#!/usr/bin/env ansible-playbook -i inventory.ini --skip-tags=consul-servers,bootstrap
 ---
-# - hosts: bramble
-#   gather_facts: true
-#   remote_user: pi
-#   become: yes
-#   become_user: root
-#   roles:
-#     - utils
-#     - { role: dnsmasq, consul_dns_domain: bramble.local }
-#   tags:
-#     - bramble
+- hosts: bramble
+  gather_facts: true
+  remote_user: pi
+  become: yes
+  become_user: root
+  roles:
+    - utils
+    - { role: dnsmasq, consul_dns_domain: bramble.local }
+  tags:
+    - bramble
+    - bootstrap
 
 - name: setup the consul servers
   hosts: consul
@@ -27,21 +28,24 @@
   remote_user: pi
   roles:
     - { role: vault, vault_datacenter: alpha }
-    # - { role: nomad, nomad_is_server: yes }
+    - { role: nomad, nomad_is_server: yes, nomad_datacenter: alpha }
     # - prometheus
     # - grafana
   tags:
     - baron
     - vault
+    - nomad
     - prometheus
     - grafana
 
-- hosts: followers
+- name: setup the folowers
+  hosts: followers
   gather_facts: true
   remote_user: pi
   roles:
+    # - consul
+    - { role: nomad, nomad_datacenter: alpha }
+  tags:
+    - followers
     - consul
     - nomad
-  tags:
-    - consul
-    - followers

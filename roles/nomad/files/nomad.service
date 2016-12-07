@@ -1,0 +1,13 @@
+[Unit]
+Description=a cluster manager
+Documentation=http://www.nomadproject.io
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/nomad agent --config=/etc/nomad/nomad.hcl
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

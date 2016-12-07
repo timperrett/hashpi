@@ -1,0 +1,22 @@
+bind_addr = "0.0.0.0"
+data_dir = "/var/lib/nomad"
+region = "{{ nomad_datacenter }}"
+datacenter = "{{ nomad_datacenter }}"
+name = "{{ ansible_hostname }}.node"
+log_level = "DEBUG"
+enable_debug = true
+
+advertise {
+  # We need to specify our host's IP because we can't
+  # advertise 0.0.0.0 to other nodes in our cluster.
+  http = "{{ ansible_default_ipv4.address }}:4646"
+  rpc = "{{ ansible_default_ipv4.address }}:4647"
+  serf = "{{ ansible_default_ipv4.address }}:4648"
+}
+
+server {
+  enabled = true
+  bootstrap_expect = {{ nomad_bootstrap_expect }}
+  retry_join = {{ nomad_retry_join }}
+  rejoin_after_leave = true
+}
