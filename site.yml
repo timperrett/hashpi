@@ -1,4 +1,4 @@
-#!/usr/bin/env ansible-playbook -i inventory.ini --skip-tags=consul-servers,bootstrap
+#!/usr/bin/env ansible-playbook -i inventory.ini --skip-tags=consul-servers,bootstrap,vault
 ---
 - hosts: bramble
   gather_facts: true

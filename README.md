@@ -84,13 +84,13 @@ Now we have our four Pi's running SSH and have disabled the features we wont be 
 
 #### Bootstrap Playbook
 
-The bootstrap playbook setups up core functionality so that we can run more complicated playbooks on the Pis themselves, and also get access to the cluster nodes without having to SSH with an explicit username and password (add your key to the `user` roles `vars` file). After first turning on the cluster and enabling SSH, the following should be executed in the root of the repository: 
+The bootstrap playbook setups up core functionality so that we can run more complicated playbooks on the Pis themselves, and also get access to the cluster nodes without having to SSH with an explicit username and password (add your key to the `user` roles `vars` file). After first turning on the cluster and enabling SSH, the following should be executed in the root of the repository:
 
 ```
 ./bootstrap.yml
 ```
 
-This mainly kills avahai-daemon and several other processes we will not be needing, going forward. 
+This mainly kills avahai-daemon and several other processes we will not be needing, going forward.
 
 #### Site Playbook
 
@@ -99,6 +99,14 @@ Once you've bootstrapped your cluster and you can SSH into the nodes with your k
 ```
 ./site.yml
 ```
+
+Any other time you update the cluster using the `site.yml` playbook, be sure to run with the following option:
+
+```
+./site.yml --skip-tags=consul-servers,bootstrap
+```
+
+This will ensure that the consul servers used to corrdinate everything don't get screwed up during the deployment of new software.
 
 This set of playbooks installs the following software (in order).
 
@@ -114,7 +122,7 @@ Whilst the setup is vastly automated, there are a few manual steps. When first i
 
 ```
 $ ssh pi@<baron-ip>
-$ export VAULT_ADDR=http://<ip>:8200
+$ export VAULT_ADDR="http://`ip -4 route get 8.8.8.8 | awk '{print $7}' | xargs echo -n`:8200"
 $ vault init
 
 # be sure to keep the generated keys in a safe place, and absolutely do not check them in anywhere!
@@ -123,6 +131,6 @@ $ vault -tls-skip-verify unseal
 
 ```
 
-Given this is just a local raspberry pi cluster, I'm not fussing around with SSL as its a development cluster for me. I do however really, really recommend that you use SSL on this thing - or anything else for that matter - that is the best practice can self-signed certs can be easily generated and provided to vault. See the documentation for more information on that. 
+Given this is just a local raspberry pi cluster, I'm not fussing around with SSL as its a development cluster for me. I do however really, really recommend that you use SSL on this thing - or anything else for that matter - that is the best practice can self-signed certs can be easily generated and provided to vault. See the documentation for more information on that.
 
 
