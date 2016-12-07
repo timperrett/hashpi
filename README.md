@@ -105,7 +105,7 @@ This set of playbooks installs the following software (in order).
 + Debugging Utils (htop, nslookup, telnet etc)
 + [Consul](https://www.consul.io/) (runs on 3 nodes as a quorum)
 + [Vault](https://www.vaultproject.io/) (uses Consul as its secure backend; runs on rpi01)
-+ [Noamd](https://www.nomadproject.io/) (only rpi01 has the `server` component of Nomad installed)
++ [Nomad](https://www.nomadproject.io/) (only rpi01 has the `server` component of Nomad installed)
 + [Prometheus](https://prometheus.io) (only runs on rpi01)
 + [Grafana](http://grafana.org/)
 + [Docker](https://docker.com/)
