@@ -43,7 +43,7 @@
   gather_facts: true
   remote_user: pi
   roles:
-    # - consul
+    - consul
     - { role: nomad, nomad_dc: alpha }
   tags:
     - followers
